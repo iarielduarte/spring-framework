@@ -7,16 +7,18 @@ import org.springframework.stereotype.Repository;
 
 import com.pluralsight.model.Exercise;
 
-@Repository("exerciseRepository")
-public class ExerciseRepositoryImpl implements ExerciseRepository {
+//Este usaba en la metologia sin JpaRepository, ya no se necesita esta implementacion
 
-	@PersistenceContext
-	private EntityManager em;
-	
-	public Exercise save(Exercise exercise) {
-		em.persist(exercise);
-		em.flush();
-		return exercise;
-	}
-
-}
+//@Repository("exerciseRepository")
+//public class ExerciseRepositoryImpl implements ExerciseRepository {
+//
+//	@PersistenceContext
+//	private EntityManager em;
+//	
+//	public Exercise save(Exercise exercise) {
+//		em.persist(exercise);
+//		em.flush();
+//		return exercise;
+//	}
+//
+//}

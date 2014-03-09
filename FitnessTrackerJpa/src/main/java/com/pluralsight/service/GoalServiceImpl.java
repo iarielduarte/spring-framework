@@ -20,10 +20,14 @@ public class GoalServiceImpl implements GoalService {
 	public Goal save(Goal goal) {
 		return goalRepository.save(goal);
 	}
-
+//Metodo que usaba sin JpaReository
+//	public List<Goal> findAllGoals() {
+//		return goalRepository.loadAll();
+//	}
+	
 	public List<Goal> findAllGoals() {
-		return goalRepository.loadAll();
-	}
+	return goalRepository.findAll();
+}
 
 	public List<GoalReport> findAllGoalReports() {
 		return goalRepository.findAllGoalReports();
