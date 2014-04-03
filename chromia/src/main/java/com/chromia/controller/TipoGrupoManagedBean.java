@@ -8,7 +8,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -21,7 +20,6 @@ import com.chromia.service.ITipoGrupoService;
 
 @ManagedBean(name = "tipoGrupoMBean")
 @ViewScoped
-@SessionScoped
 public class TipoGrupoManagedBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -37,7 +35,7 @@ public class TipoGrupoManagedBean implements Serializable{
     @ManagedProperty(value = "#{GrupoService}")
 	private IGrupoService grupoService;
  	@ManagedProperty(value = "#{TipoGrupoService}")
- 	ITipoGrupoService tipoGrupoService;
+ 	private ITipoGrupoService tipoGrupoService;
  	private String nombre;
 	private Integer grupo;
  	

@@ -13,12 +13,14 @@ import java.util.List;
 
 
 
+
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.chromia.model.TipoGrupo;
+import com.chromia.model.Usuario;
 
 @Repository("TipoGrupoDao")
 public class TipoGrupoDao implements ITipoGrupoDao, Serializable {
@@ -68,5 +70,12 @@ public class TipoGrupoDao implements ITipoGrupoDao, Serializable {
 		return (List<TipoGrupo>) query.list();
 	}
 	
+	
+//	@Override
+//	public List<TipoGrupo> getTipoGrupos() {
+//		String query="FROM TipoGrupo t LEFT JOIN FETCH t.grupo";
+//		List list = getSessionFactory().getCurrentSession().createQuery(query).list();
+//		return list;
+//	}
 	
 }

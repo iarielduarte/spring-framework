@@ -7,12 +7,18 @@ package com.chromia.model;
  */
 
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.NamedQuery;
 
@@ -43,25 +49,34 @@ public class Marca {
 	@Column(name="mar_nombre")
 	private String nombre;
 
+	@OneToMany(mappedBy="marca", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	private List<Articulo> articulos;
+	
+	
+
 	public Integer getId() {
 		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getNombre() {
 		return nombre;
 	}
 
+	public void setArticulos(List<Articulo> articulos) {
+		this.articulos = articulos;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
 	
-//	@OneToMany(mappedBy="grupo", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-//    private List<Articulo> articulos = new ArrayList<Articulo>();
-
+	public List<Articulo> getArticulos() {
+		return articulos;
+	}
 	
 	
 	

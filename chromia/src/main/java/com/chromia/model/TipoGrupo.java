@@ -6,6 +6,9 @@ package com.chromia.model;
  * @version 1.0.0
  */
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -33,7 +37,7 @@ public class TipoGrupo {
 	static final String GET_TIPO_GRUPO_BY_ID_QUERY = "SELECT t FROM TipoGrupo t LEFT JOIN FETCH t.grupo where t.id = :id"; 
 	public static final String GET_TIPO_GRUPO_BY_ID = "GET_TIPO_GRUPO_BY_ID"; 
 	
-	static final String GET_ALL_TIPO_GRUPOS_QUERY = "SELECT t FROM TipoGrupo t LEFT JOIN FETCH t.grupo"; 
+	static final String GET_ALL_TIPO_GRUPOS_QUERY = "FROM TipoGrupo t LEFT JOIN FETCH t.grupo"; 
 	public static final String GET_ALL_TIPO_GRUPOS = "GET_ALL_TIPO_GRUPOS";
 	
 	@Id
@@ -44,9 +48,12 @@ public class TipoGrupo {
 	@Column(name="tg_nombre")
 	private String nombre;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="gru_codigo")
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="gru_codigo", referencedColumnName = "gru_codigo")
     private Grupo grupo;
+	
+	@OneToMany(mappedBy="tipoGrupo", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	private List<Articulo> articulos;
 
 	public Integer getId() {
 		return id;
@@ -72,8 +79,14 @@ public class TipoGrupo {
 	public void setGrupo(Grupo grupo) {
 		this.grupo = grupo;
 	}
+
+	public List<Articulo> getArticulos() {
+		return articulos;
+	}
+
+	public void setArticulos(List<Articulo> articulos) {
+		this.articulos = articulos;
+	}
 	
-//	@OneToMany(mappedBy="tipoGrupo", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-//  private List<Articulo> articulos = new ArrayList<Articulo>();
 	
 }

@@ -16,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -49,7 +50,10 @@ public class Grupo {
 	
 	@Column(name="gru_nombre")
 	private String nombre;
-
+	
+	@OneToMany(mappedBy="grupo", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	private List<Articulo> articulos;
+	 
 	public Integer getId() {
 		return id;
 	}
@@ -65,13 +69,13 @@ public class Grupo {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	
-//	@OneToMany(mappedBy="grupo", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-//    private List<Articulo> articulos = new ArrayList<Articulo>();
 
-	
-	
-	
-	
+	public List<Articulo> getArticulos() {
+		return articulos;
+	}
+
+	public void setArticulos(List<Articulo> articulos) {
+		this.articulos = articulos;
+	}
 	
 }

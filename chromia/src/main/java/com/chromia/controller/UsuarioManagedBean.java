@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -34,11 +33,11 @@ public class UsuarioManagedBean implements Serializable{
     private List<Usuario> filteredUsuarios;  
   
     
-   //-- Spring User Service is injected... --//
+   //-- Spring Service is injected... --//
     @ManagedProperty(value = "#{RolService}")
 	private IRolService rolService;
  	@ManagedProperty(value = "#{UsuarioService}")
- 	IUsuarioService usuarioService;
+ 	private IUsuarioService usuarioService;
  	private String nombre;
 	private String clave;
 	private String email;
