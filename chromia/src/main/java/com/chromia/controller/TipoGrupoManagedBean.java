@@ -11,9 +11,11 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
 
 import org.springframework.dao.DataAccessException;
 
+import com.chromia.model.Grupo;
 import com.chromia.model.TipoGrupo;
 import com.chromia.service.IGrupoService;
 import com.chromia.service.ITipoGrupoService;
@@ -29,6 +31,8 @@ public class TipoGrupoManagedBean implements Serializable{
     private TipoGrupo selectedTipoGrupo;  
     
     private List<TipoGrupo> filteredTipoGrupos;  
+    
+    private List<SelectItem> selectOneItemTipoGrupo;
   
     
    //-- Spring User Service is injected... --//
@@ -117,6 +121,15 @@ public class TipoGrupoManagedBean implements Serializable{
 	}
 
 
+	public List<SelectItem> getSelectOneItemTipoGrupo() {
+		selectOneItemTipoGrupo = new ArrayList<SelectItem>();
+		List<TipoGrupo> tipoGrupos = getTipoGrupoService().getTipoGrupos();
+		for (TipoGrupo tipoGrupo : tipoGrupos) {
+			SelectItem selectItem = new SelectItem(tipoGrupo.getId(), tipoGrupo.getNombre());
+			selectOneItemTipoGrupo.add(selectItem);
+		}
+		return selectOneItemTipoGrupo;
+	}
 	
 //	TODO: Action Listener
 	

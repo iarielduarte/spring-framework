@@ -26,8 +26,8 @@ import com.chromia.model.Grupo;
 import com.chromia.service.IGrupoService;
 
 @ManagedBean(name = "grupoMBean")
-@ViewScoped
 @SessionScoped
+@ViewScoped
 public class GrupoManagedBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -42,14 +42,6 @@ public class GrupoManagedBean implements Serializable{
 	@PostConstruct
 	public void inicializar() {
     	grupos = getGrupoService().getGrupos();
-		
-	}
-	
-	/*TODO: View...Actions*/
-	public void add(){
-		Grupo grupo = new Grupo();
-		grupo.setNombre(getNombre());
-		getGrupoService().addGrupo(grupo);
 		
 	}
 	

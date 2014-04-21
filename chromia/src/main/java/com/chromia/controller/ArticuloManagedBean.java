@@ -14,21 +14,26 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import org.primefaces.context.RequestContext;
 import org.springframework.dao.DataAccessException;
 
 import com.chromia.model.Articulo;
+import com.chromia.model.Grupo;
 import com.chromia.service.IArticuloService;
 import com.chromia.service.IGrupoService;
 import com.chromia.service.IMarcaService;
 import com.chromia.service.IPaisService;
 import com.chromia.service.ITipoGrupoService;
 import com.chromia.service.IUbicacionService;
+import com.itextpdf.text.log.SysoCounter;
 
 @ManagedBean(name = "articuloMBean")
+@SessionScoped
 @ViewScoped
 public class ArticuloManagedBean implements Serializable{
 
@@ -55,11 +60,11 @@ public class ArticuloManagedBean implements Serializable{
 	
 	
 	private String nombre;
-	private Integer marca;
-	private Integer grupo;
-	private Integer tipoGrupo;
-	private Integer pais;
-	private Integer ubicacion;
+	private Integer marcaId;
+	private Integer grupoId;
+	private Integer tipoGrupoId;
+	private Integer paisId;
+	private Integer ubicacionId;
 	private String codigoBarra;
 	private String nombreFactura;
 	private String codigoOrigen;
@@ -76,7 +81,9 @@ public class ArticuloManagedBean implements Serializable{
 	private List<Articulo> articulos;
 	private List<Articulo> filteredArticulos;  
 	private Articulo selectedArticulo; 
+	private Boolean confirmaGrupo=false; 
 	
+
 	@PostConstruct
 	public void inicializar() {
     	articulos = getArticuloService().getArticulos();
@@ -89,48 +96,48 @@ public class ArticuloManagedBean implements Serializable{
 		return nombre;
 	}
 
-	public void setNombre(String name) {
-		this.nombre = name;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
-	public Integer getMarca() {
-		return marca;
+	public Integer getMarcaId() {
+		return marcaId;
 	}
 
-	public void setMarca(Integer marca) {
-		this.marca = marca;
+	public void setMarcaId(Integer marcaId) {
+		this.marcaId = marcaId;
 	}
 
-	public Integer getGrupo() {
-		return grupo;
+	public Integer getGrupoId() {
+		return grupoId;
 	}
 
-	public void setGrupo(Integer grupo) {
-		this.grupo = grupo;
+	public void setGrupoId(Integer grupoId) {
+		this.grupoId = grupoId;
 	}
 
-	public Integer getTipoGrupo() {
-		return tipoGrupo;
+	public Integer getTipoGrupoId() {
+		return tipoGrupoId;
 	}
 
-	public void setTipoGrupo(Integer tipoGrupo) {
-		this.tipoGrupo = tipoGrupo;
+	public void setTipoGrupoId(Integer tipoGrupoId) {
+		this.tipoGrupoId = tipoGrupoId;
 	}
 
-	public Integer getPais() {
-		return pais;
+	public Integer getPaisId() {
+		return paisId;
 	}
 
-	public void setPais(Integer pais) {
-		this.pais = pais;
+	public void setPaisId(Integer paisId) {
+		this.paisId = paisId;
 	}
 
-	public Integer getUbicacion() {
-		return ubicacion;
+	public Integer getUbicacionId() {
+		return ubicacionId;
 	}
 
-	public void setUbicacion(Integer ubicacion) {
-		this.ubicacion = ubicacion;
+	public void setUbicacionId(Integer ubicacionId) {
+		this.ubicacionId = ubicacionId;
 	}
 
 	public String getCodigoBarra() {
@@ -228,6 +235,16 @@ public class ArticuloManagedBean implements Serializable{
 	public void setIva(Integer iva) {
 		this.iva = iva;
 	}
+	
+	public Boolean getConfirmaGrupo() {
+		return confirmaGrupo;
+	}
+
+	public void setConfirmaGrupo(Boolean confirmaGrupo) {
+		this.confirmaGrupo = confirmaGrupo;
+	}
+	
+	//Fin de atributos
 
 	public IArticuloService getArticuloService() {
 		return articuloService;
@@ -285,9 +302,6 @@ public class ArticuloManagedBean implements Serializable{
 		this.articulos = articulos;
 	}
 	
-	
-
-
 	public Articulo getSelectedArticulo() {
 		if(selectedArticulo==null)
 			selectedArticulo = getArticuloService().getArticulos().get(0); 
@@ -310,13 +324,13 @@ public class ArticuloManagedBean implements Serializable{
 	
 	public void onCreate(ActionEvent actionEvent) {
 		try {
-			
-			
 		    if(getArticuloService().addArticulo(this.articuloAdd()))
 		    {
-		    	onReset();
+		    	
 		        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito : ",  "El articulo "+articuloAdd().getNombre()+" se guardo con éxito :)");
 		        FacesContext.getCurrentInstance().addMessage(null, message);
+		        this.reset();
+		    	this.onReset();
 		    }else{
 		    	FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error : ",  "El articulo "+articuloAdd().getNombre()+" no se pudo guardo :(");
 		        FacesContext.getCurrentInstance().addMessage(null, message);
@@ -375,18 +389,18 @@ public class ArticuloManagedBean implements Serializable{
 	public Articulo articuloAdd(){
 		Articulo add = new Articulo();
 		add.setNombre(getNombre());
-		add.setGrupo(getGrupoService().getGrupoById(getGrupo()));
-		add.setTipoGrupo(getTipoGrupoService().getTipoGrupoById(getTipoGrupo()));
-		add.setMarca(getMarcaService().getMarcaById(getMarca()));
-		add.setPais(getPaisService().getPaisById(getPais()));
-		add.setUbicacion(getUbicacionService().getUbicacionById(getUbicacion()));
+		add.setGrupo(getGrupoService().getGrupoById(getGrupoId()));
+		add.setTipoGrupo(getTipoGrupoService().getTipoGrupoById(getTipoGrupoId()));
+		add.setMarca(getMarcaService().getMarcaById(getMarcaId()));
+		add.setPais(getPaisService().getPaisById(getPaisId()));
+		add.setUbicacion(getUbicacionService().getUbicacionById(getUbicacionId()));
 		add.setCodigoBarra(getCodigoBarra());
-		add.setNombreFactura(getNombreFactura());
+		add.setNombreFactura(getNombre());
 		add.setCodigoOrigen(getCodigoOrigen());
 		add.setNumeroPieza(getNumeroPieza());
 		add.setCodigoMarca(getCodigoMarca());
 		add.setPrecioActual(getPrecioActual());
-		add.setPrecioAnterior(getPrecioAnterior());
+		add.setPrecioAnterior(0.00);
 		add.setPrecioVenta(getPrecioVenta());
 		add.setTipoIva(getTipoIva());
 		add.setStockMinimo(getStockMinimo());
@@ -395,5 +409,111 @@ public class ArticuloManagedBean implements Serializable{
 		
 		return add;
 	}
+	
+	public void onConfirmaGrupo(ActionEvent actionEvent){
+		if(getGrupoId()>0 && getMarcaId()>0 && getPaisId()>0 && getTipoGrupoId()>0){
+			confirmaGrupo = true;
+			this.setNombre(this.generarDescripcion());
+			this.setCodigoOrigen(this.generarCodigoArticulo());
+		}else{
+			 String referncia = "";
+			 
+			 if(getPaisId()==0)
+				 referncia = "Procedencia";
+			 if(getTipoGrupoId()==0)
+				 referncia = "Tipo de Grupo";
+			 if(getMarcaId()==0)
+				 referncia = "Marca";
+			 if(getGrupoId()==0)
+				 referncia = "Grupo";
+			 
+		     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,referncia+" es una selección obligatoria",""));  
+		}
+	}
+	
+	public void onModificaGrupo(ActionEvent actionEvent){
+		this.reset();
+	}
+	
+	public void reset(){
+		confirmaGrupo = false;
+		this.setGrupoId(0);
+		this.setMarcaId(0);
+		this.setPaisId(0);
+		this.setTipoGrupoId(0);
+		this.setUbicacionId(0);
+		this.setNombre(null);
+		this.setCodigoOrigen(null);
+		this.setCodigoBarra(null);
+		this.setNombreFactura(null);
+		this.setNumeroPieza(null);
+		this.setCodigoMarca(null);
+		this.setPrecioActual(null);
+		this.setPrecioAnterior(null);
+		this.setPrecioVenta(null);
+		this.setIva(null);
+		this.setTipoIva(null);
+		this.setStockMinimo(null);
+		this.setObservaciones(null);
+		RequestContext.getCurrentInstance().reset("formArticulo");  
+	}
+	
+	public String generarDescripcion(){
+		String tipo = getTipoGrupoService().getTipoGrupoById(getTipoGrupoId()).getNombre();
+		String marca = getMarcaService().getMarcaById(getMarcaId()).getNombre();
+		String pais = getPaisService().getPaisById(getPaisId()).getGentilicio();
+		StringBuffer strBuff = new StringBuffer();
+		strBuff.append(tipo + " ");
+		strBuff.append(marca+ " " +pais);
+		return strBuff.toString();
+		
+	}
+	
+	public String generarCodigoArticulo(){
+		Integer maxId = getArticuloService().getMaxId();
+		System.out.println("Codigo Maximo :"+maxId);
+		String tipo = getTipoGrupoService().getTipoGrupoById(getTipoGrupoId()).getNombre();
+		tipo = new String(tipo.substring(0,2));
+		StringBuffer strBuff = new StringBuffer();
+		strBuff.append("A"+tipo+"0");
+		strBuff.append(maxId+1);
+		return strBuff.toString();
+	}
+	
+	public void  printLogAtributteValue(){
+		System.out.println("Nombre :"+this.articuloAdd().getNombre());
+		System.out.println("Grupo :"+this.articuloAdd().getGrupo().getNombre());
+		System.out.println("TipoGrupo :"+this.articuloAdd().getTipoGrupo().getNombre());
+		System.out.println("Marca :"+this.articuloAdd().getMarca().getNombre());
+		System.out.println("Pais :"+this.articuloAdd().getPais().getNombre());
+		System.out.println("Ubicacion :"+this.articuloAdd().getUbicacion().getNombre());
+		System.out.println("CodigoBarra :"+this.articuloAdd().getCodigoBarra());
+		System.out.println("NombreFactura :"+this.articuloAdd().getNombreFactura());
+		System.out.println("CodigoOrigen :"+this.articuloAdd().getCodigoOrigen());
+		System.out.println("NumeroPieza :"+this.articuloAdd().getNumeroPieza());
+		System.out.println("CodigoMarca :"+this.articuloAdd().getCodigoMarca());
+		System.out.println("PrecioActual :"+this.articuloAdd().getPrecioActual());
+		System.out.println("PrecioAnterior :"+this.articuloAdd().getPrecioVenta());
+		System.out.println("PrecioVenta :"+this.articuloAdd().getPrecioVenta());
+		System.out.println("TipoIva :"+this.articuloAdd().getTipoIva());
+		System.out.println("StockMinimo :"+this.articuloAdd().getStockMinimo());
+		System.out.println("Observaciones :"+this.articuloAdd().getObservaciones());
+		System.out.println("Iva% :"+this.articuloAdd().getIva());
+	}
+	
+	/*
+	 * Page Navigation
+	 */
+	public String moveToPageAddArticulo(){
+		return "addArticulo";
+	}
+	
+	public String moveToPageArticulo(){
+		return "articulo";
+	}
+
+	
+
+	
 
 }

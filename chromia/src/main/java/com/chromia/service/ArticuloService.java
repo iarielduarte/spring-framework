@@ -93,5 +93,10 @@ public class ArticuloService implements IArticuloService, Serializable{
 		return getArticuloDao().getArticulos();
 	}
 
+	@Transactional
+	public Integer getMaxId() {
+		return getArticuloDao().getMaxId();
+	}
+
 
 }

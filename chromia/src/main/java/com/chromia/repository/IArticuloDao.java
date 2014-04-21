@@ -17,5 +17,5 @@ public interface IArticuloDao {
 	public void deleteArticulo(Articulo articulo);
 	public Articulo getArticuloById(int id);
 	public List<Articulo> getArticulos();
-	
+	public Integer getMaxId();
 }

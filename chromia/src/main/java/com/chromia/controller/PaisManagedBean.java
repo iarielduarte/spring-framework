@@ -46,12 +46,6 @@ public class PaisManagedBean implements Serializable{
 		
 	}
 	
-//	public void add(){
-//		Pais pais = new Pais();
-//		pais.setNombre(getNombre());
-//		getPaisService().addPais(pais);
-//		
-//	}
 	
 	private List<SelectItem> selectOneItemPais;
 	
@@ -94,7 +88,7 @@ public class PaisManagedBean implements Serializable{
 		selectOneItemPais = new ArrayList<SelectItem>();
 		List<Pais> paises = getPaisService().getPaises();
 		for (Pais pais : paises) {
-			SelectItem selectItem = new SelectItem(pais.getId(), pais.getNombre());
+			SelectItem selectItem = new SelectItem(pais.getId(), pais.getGentilicio());
 			selectOneItemPais.add(selectItem);
 		}
 		return selectOneItemPais;

@@ -45,14 +45,6 @@ public class MarcaManagedBean implements Serializable{
 		
 	}
 	
-	/*TODO: View...Actions*/
-	public void add(){
-		Marca marca = new Marca();
-		marca.setNombre(getNombre());
-		getMarcaService().addMarca(marca);
-		
-	}
-	
 	private List<SelectItem> selectOneItemMarca;
 	
 	

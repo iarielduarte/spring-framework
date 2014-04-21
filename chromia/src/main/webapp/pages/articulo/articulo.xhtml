@@ -14,8 +14,8 @@
 
 			<p:growl id="msgs" showDetail="true" />
 			<h:form>
-			<p:commandButton id="btnAddArticulo" update=":formAdd"
-			oncomplete="PF('articuloDialogAdd').show()" icon="ui-icon-plusthick" title="Agregar" value="Nuevo Articulo"/>
+			<p:commandButton id="btnAddArticulo" action="#{articuloMBean.moveToPageAddArticulo}"
+			 icon="ui-icon-plusthick" title="Agregar" value="Nuevo Articulo"/>
 			
 			<p:commandButton id="btnPrintArticulo" update=":formPrint"
 			oncomplete="PF('articuloDialogPrint').show()" icon="ui-icon-print" title="Imprimir" value="Informe de Articulos"/>
@@ -93,26 +93,6 @@
 				</p:dataTable>
 			</h:form>
 			
-			<h:form id="formAdd">
-				<p:dialog header="Agregar Articulo" widgetVar="articuloDialogAdd"
-					resizable="false" id="articuloDlgAdd" showEffect="fade" hideEffect="explode" modal="true">
-
-					<h:panelGrid id="display" columns="2" cellpadding="4"
-						style="margin:0 auto;">
-
-						<h:outputText value="Nombre:*" />
-						<p:inputText id="nombre"  value="#{articuloMBean.nombre}" required="true" label="Nombre"
-						requiredMessage="Nombre es un campo obligatorio" />
-						
-						<f:facet name="footer">
-							<p:separator/>
-							<p:commandButton id="btnAddSave" update=":formDataTable, :msgs" oncomplete="PF('articuloDialogAdd').hide()" actionListener="#{articuloMBean.onCreate(actionEvent)}" title="guardar" icon="ui-icon-disk" value="Guardar"/>
-							<p:commandButton id="btnAddCancel" oncomplete="PF('articuloDialogAdd').hide()" title="cancelar" icon="ui-icon-close" value="Cancelar"/>
-						</f:facet>
-					</h:panelGrid>
-
-				</p:dialog>
-			</h:form>
 			
 			<h:form id="formUpdate">
 				<p:dialog header="Modificar Articulo" widgetVar="articuloDialogUpdate"

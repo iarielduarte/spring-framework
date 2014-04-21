@@ -19,6 +19,8 @@ public class AuthorizationListener implements PhaseListener{
 
 	@Override
 	public void afterPhase(PhaseEvent event) {
+		System.out.println("Despues de la Fase: "+event.getPhaseId());
+		System.out.println("-----------------------------------------------------------------");
 		FacesContext facesContex = event.getFacesContext();
 		String currentPage = facesContex.getViewRoot().getViewId();
 		boolean isLoginPage = (currentPage.lastIndexOf("login.xhtml")>-1 ? true : false);
@@ -32,12 +34,14 @@ public class AuthorizationListener implements PhaseListener{
 	}
 
 	@Override
-	public void beforePhase(PhaseEvent arg0) {
-		
+	public void beforePhase(PhaseEvent fase) {
+		System.out.println("Antes de la Fase: "+fase.getPhaseId());
+		System.out.println("-----------------------------------------------------------------");
 	}
 
 	@Override
 	public PhaseId getPhaseId() {
+//		return PhaseId.ANY_PHASE; //va a ser llamado en todas las fases
 		return PhaseId.RESTORE_VIEW;
 	}
 
