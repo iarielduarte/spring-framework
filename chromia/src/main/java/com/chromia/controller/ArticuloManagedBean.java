@@ -18,12 +18,14 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
 
 import org.primefaces.context.RequestContext;
 import org.springframework.dao.DataAccessException;
 
 import com.chromia.model.Articulo;
 import com.chromia.model.Grupo;
+import com.chromia.model.TipoGrupo;
 import com.chromia.service.IArticuloService;
 import com.chromia.service.IGrupoService;
 import com.chromia.service.IMarcaService;
@@ -78,11 +80,13 @@ public class ArticuloManagedBean implements Serializable{
 	private String observaciones;
 	private Integer iva;
 	
+	private Integer filterGrupoId=0;
+	
 	private List<Articulo> articulos;
 	private List<Articulo> filteredArticulos;  
 	private Articulo selectedArticulo; 
 	private Boolean confirmaGrupo=false; 
-	
+	private List<SelectItem> selectOneItemTipoGrupo;
 
 	@PostConstruct
 	public void inicializar() {
@@ -319,6 +323,14 @@ public class ArticuloManagedBean implements Serializable{
 	public void setFilteredArticulos(List<Articulo> filteredArticulos) {
 		this.filteredArticulos = filteredArticulos;
 	}
+	
+	public Integer getFilterGrupoId() {
+		return filterGrupoId;
+	}
+
+	public void setFilterGrupoId(Integer filterGrupoId) {
+		this.filterGrupoId = filterGrupoId;
+	}
 
 //	TODO: Action Listener
 	
@@ -455,6 +467,7 @@ public class ArticuloManagedBean implements Serializable{
 		this.setTipoIva(null);
 		this.setStockMinimo(null);
 		this.setObservaciones(null);
+		this.setFilterGrupoId(0);
 		RequestContext.getCurrentInstance().reset("formArticulo");  
 	}
 	
@@ -502,6 +515,35 @@ public class ArticuloManagedBean implements Serializable{
 	}
 	
 	/*
+	 * Este metodo es el que trabaja con el Ajax del DropDown de Grupo
+	 * para filtrar los Tipos de Grupos por el Grupo Id
+	 * <p:ajax update="somTipoGrupo" listener="#{articuloMBean.handleGrupoChange}" />
+	 */
+	public void handleGrupoChange() {  
+        if(grupoId!=null && grupoId!=0)  
+        	this.setFilterGrupoId(grupoId);
+        else
+        	this.setFilterGrupoId(0);
+        
+    }  
+	
+	public List<SelectItem> getSelectOneItemTipoGrupo() {
+		selectOneItemTipoGrupo = new ArrayList<SelectItem>();
+		List<TipoGrupo> tipoGrupos;
+		int id = getFilterGrupoId();
+		if(id==0){
+			tipoGrupos = getTipoGrupoService().getTipoGrupos();
+		}else{
+			tipoGrupos = getTipoGrupoService().getTipoGruposByGrupo(id);
+		}
+		for (TipoGrupo tipoGrupo : tipoGrupos) {
+			SelectItem selectItem = new SelectItem(tipoGrupo.getId(), tipoGrupo.getNombre());
+			selectOneItemTipoGrupo.add(selectItem);
+		}
+		return selectOneItemTipoGrupo;
+	}
+	
+	/*
 	 * Page Navigation
 	 */
 	public String moveToPageAddArticulo(){
@@ -511,6 +553,7 @@ public class ArticuloManagedBean implements Serializable{
 	public String moveToPageArticulo(){
 		return "articulo";
 	}
+
 
 	
 

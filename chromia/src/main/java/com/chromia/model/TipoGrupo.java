@@ -29,7 +29,8 @@ import javax.persistence.Table;
 @NamedQueries(
 		{
 			@NamedQuery(name=TipoGrupo.GET_TIPO_GRUPO_BY_ID, query=TipoGrupo.GET_TIPO_GRUPO_BY_ID_QUERY),
-			@NamedQuery(name=TipoGrupo.GET_ALL_TIPO_GRUPOS, query=TipoGrupo.GET_ALL_TIPO_GRUPOS_QUERY)
+			@NamedQuery(name=TipoGrupo.GET_ALL_TIPO_GRUPOS, query=TipoGrupo.GET_ALL_TIPO_GRUPOS_QUERY),
+			@NamedQuery(name=TipoGrupo.GET_TIPO_GRUPO_BY_GRUPO_ID, query=TipoGrupo.GET_TIPO_GRUPO_BY_GRUPO_ID_QUERY),
 		}
 )
 public class TipoGrupo {
@@ -39,6 +40,9 @@ public class TipoGrupo {
 	
 	static final String GET_ALL_TIPO_GRUPOS_QUERY = "FROM TipoGrupo t LEFT JOIN FETCH t.grupo"; 
 	public static final String GET_ALL_TIPO_GRUPOS = "GET_ALL_TIPO_GRUPOS";
+	
+	static final String GET_TIPO_GRUPO_BY_GRUPO_ID_QUERY = "SELECT t FROM TipoGrupo AS t LEFT JOIN FETCH t.grupo AS g where g.id = :id"; 
+	public static final String GET_TIPO_GRUPO_BY_GRUPO_ID = "GET_TIPO_GRUPO_BY_GRUPO_ID";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

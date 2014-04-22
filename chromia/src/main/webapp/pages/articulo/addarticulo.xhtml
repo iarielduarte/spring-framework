@@ -25,28 +25,29 @@
 <!-- 					<p:messages id="msgs" rendered="#{articuloMBean.confirmaGrupo==true}"/>   -->
 					<h:panelGrid columns="4" >
 						<h:outputText value="Grupo:*"/>
-                        <p:selectOneMenu value="#{articuloMBean.grupoId}" panelStyle="width:150px" effect="fade" style="width:370px"
+                        <p:selectOneMenu id="somGrupo" value="#{articuloMBean.grupoId}" panelStyle="width:150px" effect="fade" style="width:370px"
                         filter="true" filterMatchMode="startsWith" disabled="#{articuloMBean.confirmaGrupo==true}">
                             <f:selectItem itemLabel="- Seleccione - " itemValue="" />
                             <f:selectItems value="#{grupoMBean.selectOneItemGrupo}" />
+                             <p:ajax update="somTipoGrupo" listener="#{articuloMBean.handleGrupoChange}" />  
                         </p:selectOneMenu>
 						
 						<h:outputText value="Tipo de Grupo:*"/>
-                        <p:selectOneMenu value="#{articuloMBean.tipoGrupoId}" panelStyle="width:150px" effect="fade" style="width:370px"
+                        <p:selectOneMenu id="somTipoGrupo"  value="#{articuloMBean.tipoGrupoId}" panelStyle="width:150px" effect="fade" style="width:370px"
                         filter="true" filterMatchMode="startsWith" disabled="#{articuloMBean.confirmaGrupo==true}">
                             <f:selectItem itemLabel="- Seleccione - " itemValue="" />
-                            <f:selectItems value="#{tipoGrupoMBean.selectOneItemTipoGrupo}" />
+                            <f:selectItems value="#{articuloMBean.selectOneItemTipoGrupo}" />
                         </p:selectOneMenu>
 						
 						<h:outputText value="Marca:*"/>
-                        <p:selectOneMenu value="#{articuloMBean.marcaId}" panelStyle="width:150px" effect="fade" style="width:370px"
+                        <p:selectOneMenu id="somMarca" value="#{articuloMBean.marcaId}" panelStyle="width:150px" effect="fade" style="width:370px"
                         filter="true" filterMatchMode="startsWith" disabled="#{articuloMBean.confirmaGrupo==true}">
                             <f:selectItem itemLabel="- Seleccione - " itemValue="" />
                             <f:selectItems value="#{marcaMBean.selectOneItemMarca}" />
                         </p:selectOneMenu>
 						
 						<h:outputText value="Procedencia:*"/>
-                        <p:selectOneMenu value="#{articuloMBean.paisId}" panelStyle="width:150px" effect="fade" style="width:370px"
+                        <p:selectOneMenu id="somPais" value="#{articuloMBean.paisId}" panelStyle="width:150px" effect="fade" style="width:370px"
                         filter="true" filterMatchMode="startsWith" disabled="#{articuloMBean.confirmaGrupo==true}">
                             <f:selectItem itemLabel=" - Seleccione - " itemValue="" />
                             <f:selectItems value="#{paisMBean.selectOneItemPais}" />

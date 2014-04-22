@@ -94,5 +94,10 @@ public class TipoGrupoService implements ITipoGrupoService, Serializable{
 		return getTipoGrupoDao().getTipoGrupos();
 	}
 
+	@Transactional
+	public List<TipoGrupo> getTipoGruposByGrupo(int id) {
+		return getTipoGrupoDao().getTipoGruposByGrupo(id);
+	}
+
 
 }

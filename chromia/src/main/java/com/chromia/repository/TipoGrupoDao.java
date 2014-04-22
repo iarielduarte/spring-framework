@@ -69,6 +69,12 @@ public class TipoGrupoDao implements ITipoGrupoDao, Serializable {
 		Query query = getSessionFactory().getCurrentSession().getNamedQuery(TipoGrupo.GET_ALL_TIPO_GRUPOS);
 		return (List<TipoGrupo>) query.list();
 	}
+
+	@Override
+	public List<TipoGrupo> getTipoGruposByGrupo(int id) {
+		Query query = getSessionFactory().getCurrentSession().getNamedQuery(TipoGrupo.GET_TIPO_GRUPO_BY_GRUPO_ID).setInteger("id", id);
+		return (List<TipoGrupo>) query.list();
+	}
 	
 	
 //	@Override

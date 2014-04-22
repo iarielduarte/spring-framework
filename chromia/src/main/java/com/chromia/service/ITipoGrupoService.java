@@ -25,5 +25,6 @@ public interface ITipoGrupoService {
 	public boolean deleteTipoGrupo(TipoGrupo tipoGrupo);
 	public TipoGrupo getTipoGrupoById(int id);
 	public List<TipoGrupo> getTipoGrupos();
+	public List<TipoGrupo> getTipoGruposByGrupo(int id);
 	
 }
