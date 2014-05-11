@@ -18,4 +18,5 @@ public interface IArticuloDao {
 	public Articulo getArticuloById(int id);
 	public List<Articulo> getArticulos();
 	public Integer getMaxId();
+	public Articulo getArticuloByName(String name);
 }

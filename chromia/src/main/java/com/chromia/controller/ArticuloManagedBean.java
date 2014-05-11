@@ -6,11 +6,16 @@ package com.chromia.controller;
  * @version 1.0.0
  */
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -19,8 +24,21 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSessionEvent;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 import org.springframework.dao.DataAccessException;
 
 import com.chromia.model.Articulo;
@@ -36,7 +54,6 @@ import com.itextpdf.text.log.SysoCounter;
 
 @ManagedBean(name = "articuloMBean")
 @SessionScoped
-@ViewScoped
 public class ArticuloManagedBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -60,7 +77,8 @@ public class ArticuloManagedBean implements Serializable{
 	@ManagedProperty(value = "#{ArticuloService}")
 	private IArticuloService articuloService;
 	
-	
+	public String MiCodigo="";
+	private Integer id;
 	private String nombre;
 	private Integer marcaId;
 	private Integer grupoId;
@@ -84,12 +102,15 @@ public class ArticuloManagedBean implements Serializable{
 	
 	private List<Articulo> articulos;
 	private List<Articulo> filteredArticulos;  
-	private Articulo selectedArticulo; 
+	private Articulo selectedArticulo;
+	private Articulo editArticulo;
 	private Boolean confirmaGrupo=false; 
 	private List<SelectItem> selectOneItemTipoGrupo;
 
 	@PostConstruct
 	public void inicializar() {
+		
+		System.out.println("Ejecutando............................PostConstruct");
     	articulos = getArticuloService().getArticulos();
 		
 	}
@@ -98,6 +119,14 @@ public class ArticuloManagedBean implements Serializable{
 	
 	public String getNombre() {
 		return nombre;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public void setNombre(String nombre) {
@@ -309,11 +338,21 @@ public class ArticuloManagedBean implements Serializable{
 	public Articulo getSelectedArticulo() {
 		if(selectedArticulo==null)
 			selectedArticulo = getArticuloService().getArticulos().get(0); 
+//		System.out.println("Codigo : "+selectedArticulo.getCodigoOrigen());
 		return selectedArticulo;
 	}
 
 	public void setSelectedArticulo(Articulo selectedArticulo) {
+		System.out.println("Primero entro en el SET");
 		this.selectedArticulo = selectedArticulo;
+	}
+
+	public Articulo getEditArticulo() {
+		return editArticulo;
+	}
+
+	public void setEditArticulo(Articulo editArticulo) {
+		this.editArticulo = editArticulo;
 	}
 
 	public List<Articulo> getFilteredArticulos() {
@@ -336,17 +375,20 @@ public class ArticuloManagedBean implements Serializable{
 	
 	public void onCreate(ActionEvent actionEvent) {
 		try {
-		    if(getArticuloService().addArticulo(this.articuloAdd()))
-		    {
-		    	
-		        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito : ",  "El articulo "+articuloAdd().getNombre()+" se guardo con éxito :)");
-		        FacesContext.getCurrentInstance().addMessage(null, message);
-		        this.reset();
-		    	this.onReset();
-		    }else{
-		    	FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error : ",  "El articulo "+articuloAdd().getNombre()+" no se pudo guardo :(");
-		        FacesContext.getCurrentInstance().addMessage(null, message);
+		    if(verificarNombreDuplicado(this.articuloAdd().getNombre())){
+		    	if(getArticuloService().addArticulo(this.articuloAdd()))
+			    {
+			        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito : ",  "El articulo "+articuloAdd().getNombre()+" se guardo con éxito :)");
+			        FacesContext.getCurrentInstance().addMessage(null, message);
+			        this.reset();
+			    	this.onReset();
+			    }else{
+			    	FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error : ",  "El articulo "+articuloAdd().getNombre()+" no se pudo guardo :(");
+			        FacesContext.getCurrentInstance().addMessage(null, message);
+			    }
 		    }
+			
+		    
 		} catch (DataAccessException e) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error de Conexión: ",  "Error en el acceso a la base de datos, Detalle: "+e.getMessage()+" x(");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
@@ -493,6 +535,21 @@ public class ArticuloManagedBean implements Serializable{
 		return strBuff.toString();
 	}
 	
+	public boolean verificarNombreDuplicado(String name){
+		Articulo a = new Articulo();
+		try {
+			a = getArticuloService().getArticuloByName(name);
+			if(!a.equals(null)){
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Esta descripción ya se encuentra en registrada",""));
+				return false;
+			}
+		} catch (java.lang.NullPointerException e) {
+			a = null;
+		}
+		
+		return true;
+	}
+	
 	public void  printLogAtributteValue(){
 		System.out.println("Nombre :"+this.articuloAdd().getNombre());
 		System.out.println("Grupo :"+this.articuloAdd().getGrupo().getNombre());
@@ -554,9 +611,68 @@ public class ArticuloManagedBean implements Serializable{
 		return "articulo";
 	}
 
-
+	public String moveToPageEditArticulo(){
+		return "editArticulo";
+	}
 	
 
+	public void onRowSelect(SelectEvent event) {
+		System.out.println("***********************************************************");
+		System.out.println("Seleccion :"+getSelectedArticulo().getCodigoOrigen());
+		this.setEditArticulo(getSelectedArticulo());
+		System.out.println("***********************************************************");
+		this.MiCodigo= String.valueOf(getSelectedArticulo().getId()) ;
+		ConfigurableNavigationHandler configurableNavigationHandler =
+	             (ConfigurableNavigationHandler)FacesContext.
+	               getCurrentInstance().getApplication().getNavigationHandler();
+	       
+	         configurableNavigationHandler.performNavigation("editarticulo.xhtml?faces-redirect=true");
+	}
 	
+	/**
+	 * @author Ariel Duarte
+	 * @since 10/05/2014
+	 * Integracion de JasperReport con JSF
+	 */
+	JasperPrint jasperPrint;
+	HttpServletResponse httpServletResponse;
+	ServletOutputStream servletOutputStream;
+    public void init() throws JRException{
+    	JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(articulos);
+        String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/articulos.jasper");
+        jasperPrint = JasperFillManager.fillReport(reportPath, new HashMap(), beanCollectionDataSource);
+        httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+    }
+    
+    /**
+     * Reporte en PDF
+     * @throws JRException
+     * @throws IOException
+     */
+    public void PDF() throws JRException, IOException{
+    	init();
+	//  httpServletResponse.addHeader("Content-disposition", "attachment; filename=articulos.pdf");
+	    servletOutputStream = httpServletResponse.getOutputStream();
+	    JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+	    FacesContext.getCurrentInstance().responseComplete();
+        
+    }
+    
+    /**
+     * Reporte en Excel
+     * @throws JRException
+     * @throws IOException
+     */
+    public void XLSX() throws JRException, IOException{
+       init();
+      httpServletResponse.addHeader("Content-disposition", "attachment; filename=articulos.xlsx");
+       servletOutputStream=httpServletResponse.getOutputStream();
+       JRXlsxExporter docxExporter=new JRXlsxExporter();
+       docxExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+       docxExporter.setParameter(JRExporterParameter.OUTPUT_STREAM, servletOutputStream);
+       docxExporter.exportReport();
+       FacesContext.getCurrentInstance().responseComplete();
+   }
+    
 
 }

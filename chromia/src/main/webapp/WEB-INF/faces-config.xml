@@ -36,4 +36,12 @@
 			<to-view-id>/pages/articulo/addarticulo.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+	
+	<navigation-rule>
+		<navigation-case>
+		<from-action>#{articuloMBean.moveToPageEditArticulo}</from-action>
+			<from-outcome>editArticulo</from-outcome>
+			<to-view-id>/pages/articulo/editarticulo.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 </faces-config>

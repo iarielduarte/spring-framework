@@ -37,13 +37,13 @@
 				widgetVar="tipoGrupoDataTable"
 				>
 				
-					<f:facet name="header">
-						<p:outputPanel>
-							<h:outputText value="Buscar: " />
-							<p:inputText id="globalFilter"
-								onkeyup="tipoGrupoDataTable.filter()" style="width:500px" />
-						</p:outputPanel>
-					</f:facet>
+<!-- 					<f:facet name="header"> -->
+<!-- 						<p:outputPanel> -->
+<!-- 							<h:outputText value="Buscar: " /> -->
+<!-- 							<p:inputText id="globalFilter" -->
+<!-- 								onkeyup="tipoGrupoDataTable.filter()" style="width:500px" /> -->
+<!-- 						</p:outputPanel> -->
+<!-- 					</f:facet> -->
 
 					<p:column headerText="Id" style="width:6%" filterBy="#{item.id}" sortBy="#{item.id}">
 						<h:outputText value="#{item.id}"  />

@@ -62,7 +62,7 @@ public class Articulo {
     @JoinColumn(name="ubica_codigo", referencedColumnName = "ubica_codigo")
     private Ubicacion ubicacion;
 	
-	@Column(name="artnomreal")
+	@Column(name="artnomreal",unique=true)
 	private String nombre;
 	
 	@Column(name="artbarra")

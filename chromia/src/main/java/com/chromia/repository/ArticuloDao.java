@@ -16,11 +16,16 @@ import java.util.List;
 
 
 
+
+
+
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -80,6 +85,13 @@ public class ArticuloDao implements IArticuloDao, Serializable {
 		criteria.setProjection(Projections.max("id"));
 		Integer maxId = (Integer) criteria.list().get(0);
 		return maxId;
+	}
+
+	@Override
+	public Articulo getArticuloByName(String name) {
+		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(Articulo.class);
+		criteria.add(Restrictions.eq("nombre", name));
+		return (Articulo) criteria.uniqueResult();
 	}
 	
 	
