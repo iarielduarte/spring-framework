@@ -35,6 +35,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 			@NamedQuery(name=Grupo.GET_ALL_GRUPOS, query=Grupo.GET_ALL_GRUPOS_QUERY)
 		}
 )
+
 public class Grupo {
 
 	static final String GET_GRUPO_BY_ID_QUERY = "from Grupo g where g.id = :id"; 

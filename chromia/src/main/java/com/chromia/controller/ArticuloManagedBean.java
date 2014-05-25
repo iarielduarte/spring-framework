@@ -6,8 +6,13 @@ package com.chromia.controller;
  * @version 1.0.0
  */
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +43,11 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 import org.springframework.dao.DataAccessException;
 
 import com.chromia.model.Articulo;
@@ -97,6 +106,10 @@ public class ArticuloManagedBean implements Serializable{
 	private Integer stockMinimo;
 	private String observaciones;
 	private Integer iva;
+	private  byte[] image;
+	private UploadedFile file;
+	
+	private String filePath;
 	
 	private Integer filterGrupoId=0;
 	
@@ -109,7 +122,7 @@ public class ArticuloManagedBean implements Serializable{
 
 	@PostConstruct
 	public void inicializar() {
-		
+		this.setFilePath("/resources/images/photo/logo.png");
 		System.out.println("Ejecutando............................PostConstruct");
     	articulos = getArticuloService().getArticulos();
 		
@@ -269,6 +282,14 @@ public class ArticuloManagedBean implements Serializable{
 		this.iva = iva;
 	}
 	
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
+
 	public Boolean getConfirmaGrupo() {
 		return confirmaGrupo;
 	}
@@ -460,7 +481,7 @@ public class ArticuloManagedBean implements Serializable{
 		add.setStockMinimo(getStockMinimo());
 		add.setObservaciones(getObservaciones());
 		add.setIva(getIva());
-		
+		add.setImage(getImage());
 		return add;
 	}
 	
@@ -510,6 +531,8 @@ public class ArticuloManagedBean implements Serializable{
 		this.setStockMinimo(null);
 		this.setObservaciones(null);
 		this.setFilterGrupoId(0);
+		this.setFilePath("/resources/images/photo/logo.png");
+		this.setFile(null);
 		RequestContext.getCurrentInstance().reset("formArticulo");  
 	}
 	
@@ -623,8 +646,7 @@ public class ArticuloManagedBean implements Serializable{
 		System.out.println("***********************************************************");
 		this.MiCodigo= String.valueOf(getSelectedArticulo().getId()) ;
 		ConfigurableNavigationHandler configurableNavigationHandler =
-	             (ConfigurableNavigationHandler)FacesContext.
-	               getCurrentInstance().getApplication().getNavigationHandler();
+	             (ConfigurableNavigationHandler)FacesContext.getCurrentInstance().getApplication().getNavigationHandler();
 	       
 	         configurableNavigationHandler.performNavigation("editarticulo.xhtml?faces-redirect=true");
 	}
@@ -673,6 +695,123 @@ public class ArticuloManagedBean implements Serializable{
        docxExporter.exportReport();
        FacesContext.getCurrentInstance().responseComplete();
    }
+
+	public UploadedFile getFile() {
+		return file;
+	}
+
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
     
+	public void upload(FileUploadEvent event) {
+		System.out.println("Sin entro pero no hago ni mierda");
+		file = event.getFile();
+        if(file != null) {
+            FacesMessage msg = new FacesMessage("Succesful", file.getFileName() + " fue subida con éxito.");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            
+         // Do what you want with the file       
+         try {
+         copyFile(file.getFileName(), file.getInputstream());
+         } catch (IOException e) {
+         e.printStackTrace();
+         }
+        }
+    }
+	
+//	public void handleFileUpload(FileUploadEvent event) {
+//		if(event != null){
+//			FacesMessage msg = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+//	        FacesContext.getCurrentInstance().addMessage(null, msg);
+//		}
+//		
+//	}
+	
+	public String destination = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/images/photo/");
+	public void copyFile(String fileName, InputStream in) {
+		try {
+			 System.out.println("Real Path :"+destination);
+			// write the inputStream to a FileOutputStream
+			OutputStream out = new FileOutputStream(new File(destination +"\\"+ fileName));
+
+			int read = 0;
+			byte[] bytes = new byte[6124];
+
+			while ((read = in.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+
+			in.close();
+			out.flush();
+			out.close();
+
+			System.out.println("Imagen copiada!");
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		this.setFilePath("/resources/images/photo/"+fileName);	
+		this.uploadImge(destination +"\\"+ fileName);
+	}
+	
+	public void uploadImge(String path){
+		if(file != null) {
+			System.out.println("El Directorio que se paso como parametro:"+path);
+			
+			//save image into database
+		    	File pfile = new File(path);
+		        byte[] bFile = new byte[(int) pfile.length()];
+		 
+		        try {
+			     FileInputStream fileInputStream = new FileInputStream(pfile);
+			     //convert file into array of bytes
+			     fileInputStream.read(bFile);
+			     fileInputStream.close();
+		        } catch (Exception e) {
+			     e.printStackTrace();
+		        }
+		        String directorio = pfile.getAbsolutePath();
+		        System.out.println("El Directorio donde se copio el archivo:"+directorio);
+		        this.setImage(bFile);
+		 }
+		
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+	 
+	public StreamedContent getVerImagen() {
+		StreamedContent imagem;
+		// String id =
+		// FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("image_id");
+
+		System.out.println("***********************************************************");
+		System.out.println("Seleccion :" + getSelectedArticulo().getId());
+		System.out.println("***********************************************************");
+		Integer imagemId = getSelectedArticulo().getId();
+		if (imagemId != null) {  
+			System.out.println("Entre putooooooo:"+imagemId);
+			Articulo c = getArticuloService().getArticuloById(imagemId);
+           System.out.println("Codigo :"+c.getImage());
+           try {
+           		System.out.println("Esta mierda tiene imagen:"+imagemId);
+           		imagem = new DefaultStreamedContent(new ByteArrayInputStream(getArticuloService().getArticuloById(imagemId).getImage()));
+                imagem = new DefaultStreamedContent();  
+                return imagem;  
+           	
+		} catch (javax.el.ELException e) {
+			return null;
+		}
+           
+	}             
+		
+		return null;
+		
+	}
 
 }

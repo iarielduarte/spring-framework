@@ -6,6 +6,8 @@ package com.chromia.model;
  * @version 1.0.0
  */
 
+import java.sql.Blob;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import org.primefaces.model.UploadedFile;
 
 
 
@@ -100,6 +104,9 @@ public class Articulo {
 	
 	@Column(name="artivaporc")
 	private Integer iva;
+	
+	@Column(name="artimg")
+	private byte[] image;
 
 	public String getCodigoBarra() {
 		return codigoBarra;
@@ -251,6 +258,14 @@ public class Articulo {
 
 	public void setUbicacion(Ubicacion ubicacion) {
 		this.ubicacion = ubicacion;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 
 	
