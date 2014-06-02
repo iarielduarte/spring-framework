@@ -67,13 +67,13 @@
 			
 				<p:dialog header="Ver Articulo" widgetVar="articuloDialogView"
 					resizable="false" id="articuloDlgView" showEffect="explode" hideEffect="explode" modal="true">
-	                    
+						
 					<h:panelGrid id="display" columns="2" cellpadding="4" style="margin:0 auto; font-size: 11px;">
-
-						<p:graphicImage value="#{articuloMBean.verImagen}" width="170" height="120"/>  
-	                    
-						<h:outputText value="Id :"/>
-						<h:outputText value="#{articuloMBean.selectedArticulo.id}" />
+						
+						<p:graphicImage value="#{articuloMBean.verImagen}" width="170" height="150">
+							<f:param name="imagemId" value="#{articuloMBean.selectedArticulo.id}" />
+						</p:graphicImage>
+						<h:outputText value="" width="10" height="10"/>
 						
 						<h:outputText value="Codigo de Articulo:"/>
 						<h:outputText value="#{articuloMBean.selectedArticulo.codigoOrigen}" />

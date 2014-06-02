@@ -57,7 +57,7 @@ public class ArticuloDao implements IArticuloDao, Serializable {
 
 	@Override
 	public void updateArticulo(Articulo articulo) {
-		getSessionFactory().getCurrentSession().update(articulo);
+		getSessionFactory().getCurrentSession().merge(articulo);
 		
 	}
 

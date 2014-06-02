@@ -157,6 +157,32 @@
 				</p:panel>
 			</h:form>
 			
+			<h:form id="formimg" enctype="multipart/form-data">
+				<p:panel id="panelImg" header="Imagen del Artículo" style="margin-bottom:10px;">
+					<h:panelGrid columns="1" >
+					
+					<h:outputText value="Seleccionar una nueva Imagen (Maximo 2MB):"/>
+					
+					<p:fileUpload fileUploadListener="#{articuloMBean.upload}"
+					required="true" mode="advanced" dragDropSupport="true"
+					multiple="true" sizeLimit="2097152" fileLimit="5"
+					allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="miimi">
+					<p:graphicImage id="miimi" value="#{articuloMBean.filePath}" width="120" height="120" /> 
+					</p:fileUpload>
+					
+					<h:outputText value="Imagen Actual del Artículo:"/>
+					
+					<p:graphicImage value="#{articuloMBean.verImagen}" width="170" height="150">
+							<f:param name="imagemId" value="#{articuloMBean.selectedArticulo.id}" />
+						</p:graphicImage>
+						
+						
+					
+				
+					</h:panelGrid>
+					
+				</p:panel>
+			</h:form>
 			
 			</ui:define>
 	</ui:composition>

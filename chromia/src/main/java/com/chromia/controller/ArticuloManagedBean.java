@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.PhaseId;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -106,7 +108,7 @@ public class ArticuloManagedBean implements Serializable{
 	private Integer stockMinimo;
 	private String observaciones;
 	private Integer iva;
-	private  byte[] image;
+	private  byte[] image=null;
 	private UploadedFile file;
 	
 	private String filePath;
@@ -421,11 +423,20 @@ public class ArticuloManagedBean implements Serializable{
 	public void onEdit(ActionEvent actionEvent) {
 		try {
 			
+			//Solo si se encuentra otra imagen selecciona modificamos la que tenemos actualmente
+			if(!(this.getImage()==null)){
+//				this.getSelectedArticulo().setImage(null);
+//				getArticuloService().updateArticulo(getSelectedArticulo());
+				this.getSelectedArticulo().setImage(this.getImage());
+			}
+			
+			
 		    if(getArticuloService().updateArticulo(getSelectedArticulo()))
 		    {
-		    	onReset();
 		        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito : ",  "El articulo "+this.selectedArticulo.getNombre()+" se modifico con éxito :)");
 		        FacesContext.getCurrentInstance().addMessage(null, message);
+		        this.reset();
+		    	this.onReset();
 		    }else{
 		    	FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error : ",  "El articulo "+this.selectedArticulo.getNombre()+" no se pudo modificar :(");
 		        FacesContext.getCurrentInstance().addMessage(null, message);
@@ -696,6 +707,11 @@ public class ArticuloManagedBean implements Serializable{
        FacesContext.getCurrentInstance().responseComplete();
    }
 
+    /**
+     * @author Ariel Duarte
+     * @return UploadedFile: Metodos que permite subir una imgen desde la pc a un p:graphicImage
+     * @return
+     */
 	public UploadedFile getFile() {
 		return file;
 	}
@@ -705,7 +721,6 @@ public class ArticuloManagedBean implements Serializable{
 	}
     
 	public void upload(FileUploadEvent event) {
-		System.out.println("Sin entro pero no hago ni mierda");
 		file = event.getFile();
         if(file != null) {
             FacesMessage msg = new FacesMessage("Succesful", file.getFileName() + " fue subida con éxito.");
@@ -720,13 +735,6 @@ public class ArticuloManagedBean implements Serializable{
         }
     }
 	
-//	public void handleFileUpload(FileUploadEvent event) {
-//		if(event != null){
-//			FacesMessage msg = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-//	        FacesContext.getCurrentInstance().addMessage(null, msg);
-//		}
-//		
-//	}
 	
 	public String destination = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/images/photo/");
 	public void copyFile(String fileName, InputStream in) {
@@ -785,33 +793,25 @@ public class ArticuloManagedBean implements Serializable{
 		this.filePath = filePath;
 	}
 	 
-	public StreamedContent getVerImagen() {
-		StreamedContent imagem;
-		// String id =
-		// FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("image_id");
-
-		System.out.println("***********************************************************");
-		System.out.println("Seleccion :" + getSelectedArticulo().getId());
-		System.out.println("***********************************************************");
-		Integer imagemId = getSelectedArticulo().getId();
-		if (imagemId != null) {  
-			System.out.println("Entre putooooooo:"+imagemId);
-			Articulo c = getArticuloService().getArticuloById(imagemId);
-           System.out.println("Codigo :"+c.getImage());
-           try {
-           		System.out.println("Esta mierda tiene imagen:"+imagemId);
-           		imagem = new DefaultStreamedContent(new ByteArrayInputStream(getArticuloService().getArticuloById(imagemId).getImage()));
-                imagem = new DefaultStreamedContent();  
-                return imagem;  
-           	
-		} catch (javax.el.ELException e) {
-			return null;
+	
+	/**
+	 * @author Ariel Duarte
+	 * @return StreamedContent : Convierte el campo blob en una imagen que se pueda en p:graphicImage
+	 * @throws SocketException
+	 * @throws IOException
+	 */
+	public StreamedContent getVerImagen() throws SocketException, IOException {
+//		String id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("imagemId");
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+		    // So, we're rendering the HTML. Return a stub StreamedContent so that it will generate right URL.
+		    return new DefaultStreamedContent();
 		}
-           
-	}             
-		
-		return null;
-		
+		else {
+		    // So, browser is requesting the image. Return a real StreamedContent with the image bytes.
+		    String id = context.getExternalContext().getRequestParameterMap().get("imagemId");
+		    Articulo c = getArticuloService().getArticuloById(Integer.valueOf(id));
+		    return new DefaultStreamedContent(new ByteArrayInputStream(c.getImage()));
+		}
 	}
-
 }
