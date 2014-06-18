@@ -1,0 +1,2 @@
+goal.text=Roles for users:
+NotEmpty.user.name=Goal must be in the range 1 and 120

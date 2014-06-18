@@ -1,0 +1,5 @@
+package ar.com.user.model;
+
+public class Roles {
+
+}

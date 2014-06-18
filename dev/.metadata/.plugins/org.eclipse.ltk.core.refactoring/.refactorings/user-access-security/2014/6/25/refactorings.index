@@ -1,0 +1,6 @@
+1403058215850	Rename resource 'addRol.jsp'
+1403058231995	Rename type 'RolController'
+1403061056428	Rename compilation unit 'Roles.java'
+1403061076844	Encapsulate field 'roles'
+1403094706570	Encapsulate field 'user'
+1403097027921	Rename field 'user'

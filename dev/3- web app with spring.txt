@@ -1,0 +1,102 @@
+
+19. Spring message 
+   - creamos un archivo messages.properties en src/main/resources
+   - agregamos 
+	goal.text=Roles for users:
+
+20. Modificamos la vista jsp addRole.jsp
+	- se le agrega un nuevo taglib:
+		<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
+	- se reemplaza el valor de <td>Roles for users</td> por <td><spring:message code="goal.text"/></td>
+
+21. Se modidifica el servlet-config.xml
+	- se le agrega un nuevo bean:
+		<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" p:basename="messages"/>
+
+22. Run on server y deberia tomar la etiqueta del archivo messages.properties
+
+23. Interceptors
+	- Se modifica la vista addRole.jsp dentro del <body>
+		Language: <a href="?language=en">English</a> | <a href="?language=es">Spanish</a>
+	- Se crea un nuevo archivo properties llamado "messages_es.properties" en src/main/resources
+	- Se le agrega el siguiente valor: goal.text=Rol para usuarios:
+
+24.Se modifica el servlet-config.xml
+	- Se le agrega un nuevo bean localeResolver
+		<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" p:defaultLocale="en" />
+	- Se le agrega un interceptors
+		<mvc:interceptors>
+			<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="language" />
+		</mvc:interceptors>
+
+	- Nota: el parametro p:paramName="language" corresponde al del tag href="?language=en"
+		
+		
+	
+
+
+25. Run on server y deberia funcionar la internacionalizacion de la etiqueta
+
+26. Agregamos una nueva vista jsp para usuarios
+	- creamos una pagina jsp llamada addUser.jsp
+	- se le agrega las taglib:
+		<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+    		<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+	- en el body agregamos:
+		<form:form commandName="cmduser">
+		<table>
+			<tr>
+				<td>Enter User</td>
+				<td><form:input path="users" /></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="submit" value="Save" /></td>
+			</tr>
+		</table>
+		</form:form>
+
+27. Creamos la clase pojo para usuarios
+	public class User {
+
+		private String user;
+
+		public String getUser() {
+			return user;
+		}
+
+		public void setUser(String user) {
+			this.user = user;
+		}
+	}
+
+28. Creamos el controller para usuarios
+	@Controller
+	@SessionAttributes("cmduser")
+	public class UserController {
+
+	@RequestMapping(value = "addUser", method = RequestMethod.GET)
+	public String addUser(Model model) {
+		
+		User user = new User();
+		user.setName("Ariel");
+		model.addAttribute("cmduser", user);
+		
+		return "addUser";
+
+	}
+
+	@RequestMapping(value = "addUser", method = RequestMethod.POST)
+	public String updateUser(@ModelAttribute("cmduser") User user) {
+
+		System.out.println("User updated :" + user.getName());
+
+
+		return "redirect:addRole.html";
+	}
+
+	}
+
+
+
+	

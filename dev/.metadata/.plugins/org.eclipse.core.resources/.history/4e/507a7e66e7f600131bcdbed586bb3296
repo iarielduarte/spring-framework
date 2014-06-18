@@ -1,0 +1,14 @@
+package ar.com.user.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+
+@Controller
+public class UserController {
+	
+	public String addUser(Model model){
+		return "addUser";
+		
+	}
+
+}

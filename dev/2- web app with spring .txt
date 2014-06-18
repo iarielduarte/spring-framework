@@ -1,0 +1,91 @@
+11. Agregamos un nuevo controlador
+	- creamos la clase RoleController.java
+	- Agregamos a la clase:
+		
+		@Controller
+		public class RoleController {
+	
+			@RequestMapping(value="/addRole")
+			public String addRole(){
+				return "addRole";
+			}
+
+		}
+	
+
+12. Creamos una vista para Role
+	- Creamos una vista jsp llamada addRole.jsp
+	- Agregamos a la vista:
+	
+	<title>Add Role Page</title>
+	</head>
+	<body>
+	<h1>Add Users Role</h1>
+	</body>
+13. Run on Server
+	en las siguiente url: http://localhost:8081/user-access-security/addRole.html
+
+14. Agregamos las Tag Library de Spring framework a las vistas jsp
+	<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+	*<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+	*<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
+	- Usamos las taglib para crear la vista
+	<body>
+	<h1>Add Users Role</h1>
+
+	<form:form>
+		<table>
+			<tr>	
+				<td>Roles for users</td>
+				<td><form:input path="roles" /></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="submit" value="Enter Rol" /></td>
+			</tr>
+		</table>
+	</form:form>
+
+	</body>
+
+15. Creamos la capa de modelo
+	- Creamos un paquete nuevo para el modelo : ar.com.user.model
+	- Creamos una clase / pojo llamado "Roles"
+		public class Role {
+			private String roles;
+
+			public String getRoles() {
+				return roles;
+			}
+
+			public void setRoles(String roles) {
+				this.roles = roles;
+			}
+		}
+16. Modificamos las clase controlador RoleController.java
+	- Se le agrega al metodo addRole():
+		
+		@RequestMapping(value="/addRole")
+		public String addRole(@ModelAttribute ("role") Role role){
+			System.out.println("Role :"+role.getRoles());
+			return "addRole";
+		}
+
+17. Se modifica la vista "addRole.jsp"
+	- Se le agrega al tag <form:form> lo siguiente
+		<form:form commandName="role">
+	- Nota: commandName="role" corresponde al del atributo del metodo addRole(@ModelAttribute ("role") Role role)
+
+18. Run on Server
+	en las siguiente url: http://localhost:8081/user-access-security/addRole.html 
+	- La aplicacion muestra una caja de texto para ingresar roles
+	- al agregar un rol y precionar el boton de Enter Rol imprime en consola el Rol
+	
+
+
+
+
+
+
+
+	

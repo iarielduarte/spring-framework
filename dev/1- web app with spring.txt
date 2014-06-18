@@ -1,0 +1,102 @@
+1. Crear la aplicacion web con Maven 
+2. Abrir el pom.xml y agregar dependencias
+	------------------------------
+	groupId: org.springframework
+	artifactId: spring-webmvc
+	version: 3.2.0.RELEASE
+	------------------------------
+	groupId: javax.servlet
+	artifactId: servlet-api
+	version: 2.5
+	scope: provided
+	------------------------------
+	groupId: javax.servlet
+	artifactId: jstl
+	version: 1.2
+	scope: provided
+	------------------------------
+3. Configurar Web.xml
+		Scheme
+		------------------------------
+		<web-app version="2.5"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns="http://java.sun.com/xml/ns/javaee" 
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+		http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" >
+
+		Spring - servlet
+		------------------------------
+		<servlet>
+    			<servlet-name>userAccessSecurityServlet</servlet-name>
+   			<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    			<init-param>
+      				<param-name>contextConfigLocation</param-name>
+      				<param-value>/WEB-INF/config/servlet-config.xml</param-value>
+    			</init-param>
+  		</servlet>
+
+		<servlet-mapping>
+    			<servlet-name>userAccessSecurityServlet</servlet-name>
+    			<url-pattern>*.html</url-pattern>
+  		</servlet-mapping>
+
+4. Configurar servlet-config.xml
+	- Crear una carpeta "config" en WEB-INF
+	- Crea un archivo create new spring-bean-configuration-file llamado "servlet-config.xml"
+	- Ir al tab "Namespaces" y Seleccionar *context *mvc
+	- Agregamos:
+		<mvc:annotation-driven/>
+		<context:component-scan base-package="ar.com.user.controller"/>
+
+5. Crear nueva carpeta de codigo
+	- Click derecho encima del poryecto crear un folder: src/main/java
+6. Creamos la siguiente clase:
+	- "HelloController" en el paquete "ar.com.user.controller"
+
+7. Clase Controller
+	
+	@Controller
+	public class HelloController {
+
+		@RequestMapping(value = "/greeting")
+		public String sayHello(Model model){
+			model.addAttribute("greeting", "Hola Mundo!");
+			return "hello";
+		}
+	}
+8. Creamos las vistas
+	- creamos una carpeta llamada "jsp" en WEB-INF
+	- En la carpeta jsp creamos una pagina .jsp llamada "hello.jsp"
+	- En el body agregamos:
+		<body>
+		 <h1>${greeting}</h1>
+		</body>
+	- Nota la pagina es llamada "hello.jsp" porque el metodo sayHello() retorna "hello"
+9. Modificamos el servlet-config.xml
+	- Agregamos el primer bean
+		<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+			<property name="prefix" value="/WEB-INF/jsp/" />
+			<property name="suffix" value=".jsp"></property>
+		</bean>
+	- Tambien podemos hacer lo mismo agregando el "Namespaces" "p" es la forma corta, y se agrega de la siguiente forma:
+		<bean
+			class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+			p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" >
+		</bean>
+		
+	
+10. Hasta aca la aplicacion deberia estar funcionando perfectamente
+	- Preparamos el contenerdor Web en este caso Apache Tomcat
+	- Start al tomcat y ponemos la siguiente URL : http://localhost:8081/user-access-security/greeting.html
+
+
+
+
+
+
+
+
+
+
+	
