@@ -44,6 +44,7 @@ import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 
+import org.hibernate.Hibernate;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -427,6 +428,7 @@ public class ArticuloManagedBean implements Serializable{
 			if(!(this.getImage()==null)){
 //				this.getSelectedArticulo().setImage(null);
 //				getArticuloService().updateArticulo(getSelectedArticulo());
+//				this.getSelectedArticulo().setImage(this.getImage());
 				this.getSelectedArticulo().setImage(this.getImage());
 			}
 			

@@ -1,9 +1,15 @@
 INDEX VERSION 1.126
+C:\spring-framework\dev\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1292105409.index
+\spring-mysql\src\main\resources
 C:\spring-framework\dev\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2343932317.index
 \user-access-security-jpa\src\main\java
+C:\spring-framework\dev\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1999515466.index
+\cv\src\main\java
 C:\spring-framework\dev\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3519221115.index
 \user-access-security\src\main\java
 C:\spring-framework\dev\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1013819796.index
 \user-access-security-jpa\src\main\java
+C:\spring-framework\dev\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2512868416.index
+\fooCompany\src\main\java
 C:\spring-framework\dev\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\646675406.index
 \user-access-security\src\main\resources

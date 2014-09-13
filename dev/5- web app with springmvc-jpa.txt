@@ -79,3 +79,30 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+
+
+3. Configuramos el JPA context.xml
+	- dentro de src/main/resource creamos la carpeta "META-INF"
+	- creamos en la carpeta  el archivo "persistence.xml"
+	- agregamos :
+		<?xml version="1.0" encoding="UTF-8"?>
+		<persistence version="2.0"
+		xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+		http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+		<persistence-unit name="punit" >
+
+		</persistence-unit>
+
+		</persistence>
+
+
+
+4. Le agrgamos al Web.xml la siguiente linea de codigos	
+	<context-param>
+	<param-name>contextConfigLocation</param-name>
+	<param-value>classpath:/jpaContext.xml</param-value>
+	</context-param>
+
+	
