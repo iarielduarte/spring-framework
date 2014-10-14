@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!-- 	Definimos al inicio los beans menos dependienes -->
+
+<!-- Equivale al codigo java : InterpreteEspanol inEspanol = new InterpreteEspanol(); -->
+
+<bean id="inEspanol" class="ar.com.interprete.beans.InterpreteEspanol"/>
+<bean id="inIngles" class="ar.com.interprete.beans.InterpreteIngles"/>
+
+<bean id="traductorEspanol" class="ar.com.interprete.beans.Traductor">
+	<property name="interprete" ref="inEspanol"/>
+	<property name="nombre" value="Ariel Duarte	"/>
+</bean>
+
+<bean id="traductorIngles" class="ar.com.interprete.beans.Traductor">
+	<property name="interprete" ref="inIngles"/>
+	<property name="nombre" value="Josehp McDowells"/>
+</bean>
+
+
+</beans>

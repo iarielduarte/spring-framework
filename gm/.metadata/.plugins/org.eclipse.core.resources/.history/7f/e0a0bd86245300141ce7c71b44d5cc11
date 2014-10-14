@@ -1,0 +1,17 @@
+package ar.com.interprete.beans;
+
+public class InterpreteIngles implements Interprete{
+
+	@Override
+	public void saludar() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void despedirse() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

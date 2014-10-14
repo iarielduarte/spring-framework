@@ -1,0 +1,28 @@
+package ar.com.interprete.main;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import ar.com.interprete.beans.AppConfiguration;
+import ar.com.interprete.beans.Traductor;
+
+public class TestInterpreteWithSpringJavaConfiguration {
+	
+	
+	public static void main(String[] args) {
+		ApplicationContext ctx = 
+				   new AnnotationConfigApplicationContext(AppConfiguration.class);
+		
+		Traductor traductor = ctx.getBean(Traductor.class);
+		
+		Traductor traductorEspanol = (Traductor) factory.getBean("traductorEspanol");
+		traductorEspanol.hablar();
+		
+		Traductor traductorIngles = (Traductor) factory.getBean("traductorIngles");
+		traductorIngles.hablar();
+
+	}
+
+}
