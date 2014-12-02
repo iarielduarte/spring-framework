@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!-- 	concursante 1 solo es recitador-->
+	<bean id="solei" class="concursantes.Malabarista">
+		<constructor-arg value="10" />
+	</bean>
+
+	<bean id="sonetoSorJuana" class="concursantes.Soneto" />
+
+<!-- 	concursante 2 es malabarista y recitador-->
+	<bean id="soleiRecitador" class="concursantes.MalabaristaRecitador">
+		<constructor-arg value="15" />
+		<constructor-arg ref="sonetoSorJuana" />
+	</bean>
+
+</beans>
